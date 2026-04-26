@@ -1,0 +1,417 @@
+!DOCTYPE html>  <html lang="en">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
+<title>Kaviprabha planting - Smart Farming Assistant</title>  
+<link rel="preconnect" href="https://fonts.googleapis.com">  
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600&family=Noto+Sans+Tamil:wght@400;500;600&display=swap" rel="stylesheet">  
+<style>  
+  :root {  
+    --green-50: #EAF3DE; --green-100: #C0DD97; --green-200: #97C459;  
+    --green-400: #639922; --green-600: #3B6D11; --green-800: #27500A; --green-900: #173404;  
+    --amber-50: #FAEEDA; --amber-100: #FAC775; --amber-200: #EF9F27;  
+    --amber-400: #BA7517; --amber-600: #854F0B; --amber-800: #633806;  
+    --teal-50: #E1F5EE; --teal-100: #9FE1CB; --teal-200: #5DCAA5;  
+    --teal-400: #1D9E75; --teal-600: #0F6E56; --teal-800: #085041;  
+    --coral-50: #FAECE7; --coral-100: #F5C4B3; --coral-200: #F0997B;  
+    --coral-400: #D85A30; --coral-600: #993C1D; --coral-800: #712B13;  
+    --blue-50: #E6F1FB; --blue-100: #B5D4F4; --blue-400: #378ADD; --blue-800: #0C447C;  
+    --red-50: #FCEBEB; --red-400: #E24B4A; --red-800: #791F1F;  
+    --bg: #F7F5F0;  
+    --card: #FFFFFF;  
+    --text: #1A1A1A;  
+    --text-muted: #6B6B5F;  
+    --border: rgba(0,0,0,0.1);  
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);  
+    --radius: 16px;  
+    --nav-h: 68px;  
+  }  
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }  
+  body {  
+    font-family: 'Baloo 2', sans-serif;  
+    background: var(--bg);  
+    color: var(--text);  
+    max-width: 430px;  
+    margin: 0 auto;  
+    min-height: 100vh;  
+    position: relative;  
+    overflow-x: hidden;  
+  }  
+  .screen { display: none; flex-direction: column; min-height: 100vh; padding-bottom: calc(var(--nav-h) + 16px); }  
+  .screen.active { display: flex; }  /* TOP BAR */
+.topbar {
+background: var(--green-800);
+padding: 14px 20px 12px;
+display: flex; align-items: center; justify-content: space-between;
+position: sticky; top: 0; z-index: 100;
+}
+.topbar-brand { display: flex; align-items: center; gap: 8px; }
+.brand-icon { width: 32px; height: 32px; background: var(--green-200); border-radius: 8px;
+display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.brand-name { color: #fff; font-size: 20px; font-weight: 800; letter-spacing: -0.3px; }
+.brand-sub { color: var(--green-100); font-size: 11px; font-weight: 500; }
+.topbar-right { display: flex; gap: 8px; }
+.lang-btn, .voice-btn {
+background: rgba(255,255,255,0.15); border: none; color: #fff;
+padding: 6px 10px; border-radius: 8px; font-size: 12px; font-family: 'Baloo 2'; font-weight: 600;
+cursor: pointer; display: flex; align-items: center; gap: 4px;
+}
+.lang-btn:active, .voice-btn:active { background: rgba(255,255,255,0.25); }
+
+/* BOTTOM NAV */
+.bottom-nav {
+position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+width: 100%; max-width: 430px;
+background: var(--card); border-top: 0.5px solid var(--border);
+display: grid; grid-template-columns: repeat(4, 1fr);
+height: var(--nav-h); z-index: 200;
+box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+}
+.nav-item {
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+gap: 3px; cursor: pointer; padding: 8px 4px; border: none; background: none;
+transition: all 0.2s;
+}
+.nav-icon { font-size: 20px; line-height: 1; }
+.nav-label { font-size: 10px; font-weight: 600; color: var(--text-muted); font-family: 'Baloo 2'; }
+.nav-item.active .nav-label { color: var(--green-600); }
+.nav-item.active .nav-icon { filter: drop-shadow(0 0 0px #639922); }
+
+/* CONTENT AREA */
+.content { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+
+/* SECTION TITLE */
+.section-title { font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; }
+
+/* CARDS */
+.card {
+background: var(--card); border-radius: var(--radius);
+border: 0.5px solid var(--border); overflow: hidden;
+box-shadow: var(--shadow);
+}
+.card-header {
+padding: 14px 16px 10px;
+display: flex; align-items: center; gap: 10px;
+border-bottom: 0.5px solid var(--border);
+}
+.card-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.card-title { font-size: 15px; font-weight: 700; }
+.card-sub { font-size: 12px; color: var(--text-muted); }
+.card-body { padding: 14px 16px; }
+
+/* HERO BANNER */
+.hero-banner {
+background: linear-gradient(135deg, var(--green-800) 0%, var(--green-600) 100%);
+border-radius: var(--radius); padding: 20px; color: #fff; position: relative; overflow: hidden;
+}
+.hero-banner::after {
+content: '🌾'; position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+font-size: 64px; opacity: 0.25;
+}
+.hero-title { font-size: 22px; font-weight: 800; line-height: 1.2; margin-bottom: 6px; }
+.hero-sub { font-size: 13px; opacity: 0.85; margin-bottom: 16px; }
+.weather-row { display: flex; gap: 12px; }
+.weather-item { background: rgba(255,255,255,0.15); border-radius: 10px; padding: 8px 12px; text-align: center; }
+.weather-val { font-size: 18px; font-weight: 700; }
+.weather-lbl { font-size: 10px; opacity: 0.8; }
+
+/* QUICK ACTIONS */
+.quick-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.quick-card {
+background: var(--card); border-radius: 14px; border: 0.5px solid var(--border);
+padding: 14px; display: flex; flex-direction: column; gap: 8px; cursor: pointer;
+transition: transform 0.15s, box-shadow 0.15s; box-shadow: var(--shadow);
+}
+.quick-card:active { transform: scale(0.97); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+.quick-emoji { font-size: 28px; }
+.quick-title { font-size: 14px; font-weight: 700; }
+.quick-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+.quick-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; }
+
+/* ALERTS */
+.alert { border-radius: 12px; padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; }
+.alert.warning { background: var(--amber-50); border: 0.5px solid var(--amber-100); }
+.alert.success { background: var(--teal-50); border: 0.5px solid var(--teal-100); }
+.alert.danger { background: var(--coral-50); border: 0.5px solid var(--coral-100); }
+.alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.alert-title { font-size: 13px; font-weight: 700; }
+.alert-text { font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+
+/* UPLOAD AREA */
+.upload-zone {
+border: 2px dashed var(--green-200); border-radius: 16px;
+padding: 32px 20px; text-align: center; cursor: pointer;
+background: var(--green-50); transition: all 0.2s;
+}
+.upload-zone:active { background: var(--green-100); }
+.upload-emoji { font-size: 48px; margin-bottom: 10px; display: block; }
+.upload-title { font-size: 16px; font-weight: 700; color: var(--green-800); margin-bottom: 4px; }
+.upload-sub { font-size: 12px; color: var(--text-muted); }
+.upload-btns { display: flex; gap: 10px; margin-top: 16px; }
+.btn {
+flex: 1; padding: 12px; border-radius: 12px; border: none; font-family: 'Baloo 2';
+font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.15s;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--green-600); color: #fff; }
+.btn-primary:active { background: var(--green-800); }
+.btn-secondary { background: var(--card); color: var(--text); border: 0.5px solid var(--border); }
+
+/* DISEASE RESULT */
+.result-card { display: none; }
+.result-card.show { display: block; }
+.severity-bar { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; margin: 8px 0; }
+.severity-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.severity-low { background: var(--teal-400); }
+.severity-med { background: var(--amber-200); }
+.severity-high { background: var(--coral-400); }
+
+.treatment-step {
+display: flex; gap: 12px; padding: 10px 0;
+border-bottom: 0.5px solid var(--border);
+}
+.treatment-step:last-child { border-bottom: none; }
+.step-num {
+width: 24px; height: 24px; border-radius: 50%; background: var(--green-100);
+color: var(--green-800); font-size: 12px; font-weight: 700;
+display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.step-content { flex: 1; }
+.step-title { font-size: 13px; font-weight: 700; }
+.step-detail { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+/* PRICE CHART */
+.chart-container { position: relative; height: 200px; }
+canvas { width: 100% !important; }
+
+.price-stat { text-align: center; }
+.price-val { font-size: 24px; font-weight: 800; }
+.price-lbl { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 2px; }
+.price-change { font-size: 12px; font-weight: 700; }
+.price-up { color: var(--teal-400); }
+.price-down { color: var(--coral-400); }
+
+.crop-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+.crop-tab {
+flex-shrink: 0; padding: 6px 14px; border-radius: 20px; border: 0.5px solid var(--border);
+font-size: 12px; font-weight: 700; cursor: pointer; background: var(--card);
+transition: all 0.15s; white-space: nowrap;
+}
+.crop-tab.active { background: var(--green-600); color: #fff; border-color: var(--green-600); }
+
+.sell-window {
+background: var(--teal-50); border: 0.5px solid var(--teal-100);
+border-radius: 12px; padding: 14px; display: flex; gap: 12px; align-items: center;
+}
+.sell-icon { font-size: 28px; }
+.sell-title { font-size: 14px; font-weight: 700; color: var(--teal-800); }
+.sell-sub { font-size: 12px; color: var(--teal-600); margin-top: 2px; }
+
+/* SOIL FORM */
+.soil-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.input-group { display: flex; flex-direction: column; gap: 4px; }
+.input-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.soil-input {
+background: var(--bg); border: 0.5px solid var(--border); border-radius: 10px;
+padding: 10px 12px; font-size: 15px; font-family: 'Baloo 2'; font-weight: 600;
+color: var(--text); outline: none; width: 100%; transition: border-color 0.2s;
+}
+.soil-input:focus { border-color: var(--green-400); background: #fff; }
+.ph-slider { width: 100%; accent-color: var(--green-600); }
+.ph-display { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+.fert-item {
+display: flex; justify-content: space-between; align-items: center;
+padding: 10px 0; border-bottom: 0.5px solid var(--border);
+}
+.fert-item:last-child { border-bottom: none; }
+.fert-name { font-size: 14px; font-weight: 700; }
+.fert-dose { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.fert-tag { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 8px; }
+.tag-n { background: var(--blue-50); color: var(--blue-800); }
+.tag-p { background: var(--amber-50); color: var(--amber-800); }
+.tag-k { background: var(--coral-50); color: var(--coral-800); }
+.tag-micro { background: var(--green-50); color: var(--green-800); }
+
+/* PROFILE SCREEN */
+.profile-header {
+background: var(--green-800); padding: 20px 20px 24px; color: #fff; text-align: center;
+}
+.avatar {
+width: 72px; height: 72px; border-radius: 50%; background: var(--green-200);
+display: flex; align-items: center; justify-content: center; font-size: 32px;
+margin: 0 auto 12px; border: 3px solid rgba(255,255,255,0.3);
+}
+.profile-name { font-size: 20px; font-weight: 800; }
+.profile-sub { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+.profile-badges { display: flex; gap: 8px; justify-content: center; margin-top: 12px; }
+.profile-badge { background: rgba(255,255,255,0.15); border-radius: 8px; padding: 5px 12px; font-size: 11px; font-weight: 600; }
+
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.stat-box { background: var(--card); border-radius: 12px; border: 0.5px solid var(--border); padding: 12px; text-align: center; }
+.stat-val { font-size: 20px; font-weight: 800; color: var(--green-600); }
+.stat-lbl { font-size: 10px; color: var(--text-muted); font-weight: 600; margin-top: 2px; }
+
+.menu-item {
+display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+border-bottom: 0.5px solid var(--border); cursor: pointer; transition: background 0.15s;
+}
+.menu-item:last-child { border-bottom: none; }
+.menu-item:active { background: var(--bg); }
+.menu-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.menu-label { flex: 1; }
+.menu-title { font-size: 14px; font-weight: 600; }
+.menu-desc { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+.menu-arrow { color: var(--text-muted); font-size: 14px; }
+
+/* LANG MODAL */
+.modal-overlay {
+position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 500;
+display: none; align-items: flex-end; justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.modal-sheet {
+background: var(--card); border-radius: 24px 24px 0 0; width: 100%; max-width: 430px;
+padding: 20px; max-height: 85vh; overflow-y: auto;
+}
+.modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
+.modal-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; }
+.lang-option {
+display: flex; align-items: center; gap: 12px; padding: 12px;
+border-radius: 12px; cursor: pointer; transition: background 0.15s; margin-bottom: 6px;
+}
+.lang-option:active, .lang-option.active { background: var(--green-50); }
+.lang-flag { font-size: 24px; }
+.lang-name { font-size: 15px; font-weight: 700; }
+.lang-native { font-size: 13px; color: var(--text-muted); }
+.lang-check { margin-left: auto; color: var(--green-600); font-size: 18px; }
+
+/* VOICE INDICATOR */
+.voice-indicator {
+position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%);
+background: var(--green-600); color: #fff; border-radius: 24px; padding: 10px 20px;
+display: none; align-items: center; gap: 8px; z-index: 300; font-size: 13px; font-weight: 700;
+box-shadow: 0 4px 20px rgba(59,109,17,0.4);
+}
+.voice-indicator.show { display: flex; }
+.voice-dot {
+width: 8px; height: 8px; border-radius: 50%; background: #fff;
+animation: pulse 0.8s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
+
+/* LOADING SPINNER */
+.loader {
+display: none; flex-direction: column; align-items: center; gap: 12px;
+padding: 24px; text-align: center;
+}
+.loader.show { display: flex; }
+.spinner {
+width: 40px; height: 40px; border: 3px solid var(--green-100);
+border-top-color: var(--green-600); border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* AI CHAT BUBBLE */
+.ai-bubble {
+background: var(--green-50); border: 0.5px solid var(--green-100);
+border-radius: 16px 16px 16px 4px; padding: 12px 14px; font-size: 13px;
+line-height: 1.6; color: var(--text); position: relative;
+}
+.ai-label { font-size: 10px; font-weight: 700; color: var(--green-600); margin-bottom: 6px; display: block; }
+
+/* TIPS CAROUSEL */
+.tip-card {
+background: var(--amber-50); border: 0.5px solid var(--amber-100); border-radius: 14px; padding: 14px;
+}
+.tip-label { font-size: 10px; font-weight: 700; color: var(--amber-600); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.tip-text { font-size: 13px; color: var(--amber-800); line-height: 1.5; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 0; height: 0; }
+
+/* TAMIL FONT */
+.tamil { font-family: 'Noto Sans Tamil', sans-serif; }
+.hindi { font-family: 'Noto Sans Devanagari', sans-serif; }
+
+/* IMAGE PREVIEW */
+.img-preview {
+width: 100%; height: 200px; object-fit: cover; border-radius: 12px; display: none;
+}
+.img-preview.show { display: block; }
+
+/* PROGRESS STEPS */
+.steps-row { display: flex; align-items: center; gap: 6px; margin-bottom: 14px; }
+.step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.3s; }
+.step-dot.done { background: var(--green-400); }
+.step-line { flex: 1; height: 1px; background: var(--border); }
+
+/* PRICE TABLE */
+.price-table { width: 100%; border-collapse: collapse; }
+.price-table th { font-size: 11px; font-weight: 700; color: var(--text-muted); text-align: left; padding: 6px 0; border-bottom: 0.5px solid var(--border); }
+.price-table td { font-size: 13px; padding: 8px 0; border-bottom: 0.5px solid var(--border); }
+.price-table tr:last-child td { border-bottom: none; }
+
+</style>  
+</head>  
+<body>  <!-- HOME SCREEN -->  <div class="screen active" id="screen-home">  
+  <div class="topbar">  
+    <div class="topbar-brand">  
+      <div class="brand-icon">🌱</div>  
+      <div>  
+        <div class="brand-name">Kaviprabha planting</div>  
+        <div class="brand-sub">Smart Farming Assistant</div>  
+      </div>  
+    </div>  
+    <div class="topbar-right">  
+      <button class="voice-btn" onclick="toggleVoice()">🎙️ Voice</button>  
+      <button class="lang-btn" onclick="openLang()">🌐 EN</button>  
+    </div>  
+  </div>    <div class="content">  
+    <div class="hero-banner">  
+      <div class="hero-title">Good Morning,<br>DIVYA! 🙏</div>  
+      <div class="hero-sub">Your crops need attention today</div>  
+      <div class="weather-row">  
+        <div class="weather-item">  
+          <div class="weather-val">32°C</div>  
+          <div class="weather-lbl">Temp</div>  
+        </div>  
+        <div class="weather-item">  
+          <div class="weather-val">78%</div>  
+          <div class="weather-lbl">Humidity</div>  
+        </div>  
+        <div class="weather-item">  
+          <div class="weather-val">⛅</div>  
+          <div class="weather-lbl">Partly Cloudy</div>  
+        </div>  
+      </div>  
+    </div>  <div class="alert warning">  
+  <div class="alert-icon">⚠️</div>  
+  <div>  
+    <div class="alert-title">Early Blight Risk Detected</div>  
+    <div class="alert-text">High humidity + warm temps — check tomato leaves today. Tap to scan.</div>  
+  </div>  
+</div>  
+
+<div class="section-title">Quick Actions</div>  
+<div class="quick-grid">  
+  <div class="quick-card" onclick="goTo('disease')">  
+    <div class="quick-emoji">🔬</div>  
+    <div class="quick-title">Disease Scan</div>  
+    <div class="quick-desc">AI-powered CNN leaf diagnosis</div>  
+    <div class="quick-badge" style="background:var(--coral-50);color:var(--coral-800);">PlantVillage CNN</div>  
+  </div>  
+  <div class="quick-card" onclick="goTo('price')">  
+    <div class="quick-emoji">📈</div>  
+    <div class="quick-title">Price Forecast</div>  
+    <div class="quick-desc">LSTM market predictions</div>  
+    <div class="quick-badge" style="background:var(--blue-50);color:var(--blue-800);">APMC Data</div>  
+  </div>  
+  <div class="quick-card" onclick="goTo('soil')">  
+    <div class="quick-emoji">🌍</div>  
+    <div class="quick-title">Soil Analyzer</div>  
+    <div class="quick-desc">Fertilizer recommendations</div>  
+    <div class="quick-badge" style="background:var(--amber-50);color:var(--amber-800);">NPK Analysis</div>  
+  </div>  
+  <div class="quick-card" onclick="goTo('profile')">  
+    <div class="quick-emoji">👨‍🌾</div>
